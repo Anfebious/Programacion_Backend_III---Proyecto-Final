@@ -1,0 +1,218 @@
+paths:
+  /api/pets:
+    get:
+      summary: "Get all pets"
+      operationId: "getAllPets"
+      tags:
+        - "Pets"
+      responses:
+        "200":
+          description: "A list of pets."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Pet'
+
+    post:
+      summary: "Create a new pet"
+      operationId: "createPet"
+      tags:
+        - "Pets"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PetInput'
+      responses:
+        "200":
+          description: "Pet created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  payload:
+                    $ref: '#/components/schemas/Pet'
+        "400":
+          description: "Invalid input"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/pets/{pid}:
+    put:
+      summary: "Update an existing pet"
+      operationId: "updatePet"
+      tags:
+        - "Pets"
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "Pet ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PetInput'
+      responses:
+        "200":
+          description: "Pet updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "pet updated"
+        "400":
+          description: "Invalid input"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      summary: "Delete a pet"
+      operationId: "deletePet"
+      tags:
+        - "Pets"
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "Pet ID"
+      responses:
+        "200":
+          description: "Pet deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "pet deleted"
+
+  /api/pets/image:
+    post:
+      summary: "Create a pet with an image"
+      operationId: "createPetWithImage"
+      tags:
+        - "Pets"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                specie:
+                  type: string
+                birthDate:
+                  type: string
+                  format: date
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: "Pet created with image successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  payload:
+                    $ref: '#/components/schemas/Pet'
+        "400":
+          description: "Invalid input"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        id:
+          type: string
+          description: "Pet ID"
+        name:
+          type: string
+        specie:
+          type: string
+        birthDate:
+          type: string
+          format: date
+        adopted:
+          type: boolean
+          default: false
+        owner:
+          type: string
+          description: "Owner ID"
+        image:
+          type: string
+          description: "Image file path"
+    
+    PetInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Bella"
+        specie:
+          type: string
+          example: "Dog"
+        birthDate:
+          type: string
+          format: date
+          example: "2020-05-20"
+
+    ErrorResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Pet Creation Error"
+        cause:
+          type: string
+          example: "Missing required fields: name, specie, birthDate"
+        message:
+          type: string
+          example: "Error Trying to create Pet"
+        code:
+          type: integer
+          example: 4001

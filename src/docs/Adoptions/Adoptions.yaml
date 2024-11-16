@@ -1,0 +1,126 @@
+paths:
+  /api/adoptions:
+    get:
+      summary: "Get all adoptions"
+      operationId: "getAllAdoptions"
+      tags:
+        - "Adoptions"
+      responses:
+        "200":
+          description: "A list of all adoptions."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Adoption'
+
+  /api/adoptions/{aid}:
+    get:
+      summary: "Get an adoption by ID"
+      operationId: "getAdoption"
+      tags:
+        - "Adoptions"
+      parameters:
+        - name: aid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "Adoption ID"
+      responses:
+        "200":
+          description: "Adoption details"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  payload:
+                    $ref: '#/components/schemas/Adoption'
+        "404":
+          description: "Adoption not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/adoptions/{uid}/{pid}:
+    post:
+      summary: "Create a new adoption"
+      operationId: "createAdoption"
+      tags:
+        - "Adoptions"
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "User ID of the person adopting"
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "Pet ID of the pet to be adopted"
+      responses:
+        "200":
+          description: "Pet adopted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Pet adopted"
+        "404":
+          description: "User or pet not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "400":
+          description: "Pet already adopted"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    Adoption:
+      type: object
+      properties:
+        id:
+          type: string
+          description: "Adoption ID"
+        owner:
+          type: string
+          description: "User ID of the pet's owner"
+        pet:
+          type: string
+          description: "Pet ID of the adopted pet"
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "error"
+        error:
+          type: string
+          example: "Adoption not found"

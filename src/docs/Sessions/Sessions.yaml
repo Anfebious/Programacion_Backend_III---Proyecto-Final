@@ -1,0 +1,170 @@
+paths:
+  /api/register:
+    post:
+      summary: Register a new user
+      description: Registers a new user with first name, last name, email, and password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: John
+                last_name:
+                  type: string
+                  example: Doe
+                email:
+                  type: string
+                  format: email
+                  example: johndoe@example.com
+                password:
+                  type: string
+                  format: password
+                  example: "yourpassword"
+      responses:
+        200:
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: string
+                    example: "user_id"
+        400:
+          description: Bad Request - Missing or incomplete values
+        500:
+          description: Internal Server Error
+
+  /api/login:
+    post:
+      summary: User login
+      description: Authenticates the user and returns a JWT token in a cookie.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: johndoe@example.com
+                password:
+                  type: string
+                  format: password
+                  example: "yourpassword"
+      responses:
+        200:
+          description: Logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Logged in
+        400:
+          description: Bad Request - Missing or incomplete values
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+
+  /api/current:
+    get:
+      summary: Get current user info
+      description: Retrieves information about the current logged-in user using a JWT cookie.
+      responses:
+        200:
+          description: Current user information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: object
+                    description: User information
+        401:
+          description: Unauthorized - No valid session
+        500:
+          description: Internal Server Error
+
+  /api/unprotectedLogin:
+    post:
+      summary: Unprotected login
+      description: Logs in a user without additional security layers, returning a JWT token in a cookie.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: johndoe@example.com
+                password:
+                  type: string
+                  format: password
+                  example: "yourpassword"
+      responses:
+        200:
+          description: Unprotected login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Unprotected Logged in
+        400:
+          description: Bad Request - Missing or incomplete values
+        404:
+          description: User not found
+        500:
+          description: Internal Server Error
+
+  /api/unprotectedCurrent:
+    get:
+      summary: Get unprotected current user info
+      description: Retrieves information about the current user from an unprotected session using a JWT cookie.
+      responses:
+        200:
+          description: Current user information from unprotected session
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: object
+                    description: User information
+        401:
+          description: Unauthorized - No valid session
+        500:
+          description: Internal Server Error
